@@ -1,4 +1,3 @@
-from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
@@ -30,6 +29,7 @@ class User(AbstractBaseUser):
     password = models.CharField("비밀번호", max_length=128)
     fullname = models.CharField("이름", max_length=20)
     join_date = models.DateTimeField("가입일", auto_now_add=True)
+    user_type = models.ForeignKey('UserType',on_delete=models.SET_NULL, null=True)
 
 		# is_active가 False일 경우 계정이 비활성화됨
     is_active = models.BooleanField(default=True) 
@@ -66,13 +66,11 @@ class User(AbstractBaseUser):
 
 
 class UserType(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    user_type = models.CharField(max_length=50)
-
+    type_name = models.CharField(max_length=50)
 
 class Userlog(models.Model):
-    email = models.ForeignKey(User, on_delete=models.CASCADE)
-    login_date = models.ForeignKey(User, on_delete=models.CASCADE)
+    username = models.ForeignKey(User,on_delete=models.CASCADE)
+    login_date = models.DateTimeField(auto_now_add=True)
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
