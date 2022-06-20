@@ -37,7 +37,7 @@ class login_view(APIView):
 
 class UserApiview(APIView):
     # permission_classes = [permissions.AllowAny]
-    def get(self, request):
+    def get(self, request, id=None):
         user = request.user
         # print(user)
         # serialized_user_data =UserSerializer(user).data
@@ -60,16 +60,13 @@ class UserApiview(APIView):
         user = authenticate(request, email= email, password = password) 
         if not user: 
             return Response({'error' : '존재하지 않는 계정이거나 패스워드가 일치하지 않습니다.'}, status= status.HTTP_401_UNAUTHORIZED) 
-
         login(request, user) 
         user = request.user
         # Userlog.objects.filter(username=user)
         # for user_data in user_datas:
             # user_log = user_data.login_date
         now_time = dt.datetime.now()
-        Userlog.objects.create(username=user, login_date=now_time)
-        
-        
+        Userlog.objects.create(user=user, login_date=now_time)
         # .filter(login_date__contains=user).update(
         #     login_date = now_time
         # )

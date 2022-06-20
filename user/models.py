@@ -69,7 +69,7 @@ class UserType(models.Model):
     type_name = models.CharField(max_length=50)
 
 class Userlog(models.Model):
-    username = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
     login_date = models.DateTimeField(auto_now_add=True)
 
 class UserProfile(models.Model):
@@ -81,6 +81,7 @@ class UserProfile(models.Model):
     hobby = models.ManyToManyField('Hobby')
 
 class Hobby(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE, related_name="hobby")
     name = models.CharField("취미", max_length=50)
     
     def __str__(self):
