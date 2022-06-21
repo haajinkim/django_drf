@@ -17,3 +17,4 @@ class ArticleSerializers(serializers.ModelSerializer):
     class Meta: 
         model = ArticleModel()
         fields = ["article"]
+        

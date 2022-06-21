@@ -16,25 +16,29 @@ class BlogApiview(APIView):
         user = request.user
         return Response(ArticleSerializers(user).data)
 
-    permission_classes = [RegistedMoreThanAWeekUser]
+    # permission_classes = [RegistedMoreThanAWeekUser]
     def post(self, request):
-        
         user = request.user
         title = request.data.get('title',"")
-        category = request.data.get('category',"")
+        categorys = request.data.get('category',"")
         desc = request.data.get('desc',"")
-        cate = Article.objects.get(id=1)
         if len(title) <= 5:
             return Response({'게시글을 작성할 수 없습니다!'})
         elif len(desc) <= 20:
             return Response({'댓글을 작성할 수 없습니다!'})
-        elif category == "":
+        elif categorys == "":
             return Response({'카테고리를 지정해야 합니다!'})
-        # print(title,cartegory,desc)
-        Article.objects.create(
+    
+        categroy_objets = []
+        for category in categorys:
+            category_object,_ = Category.objects.get_or_create(category=category)
+            categroy_objets.append(category_object)
+            
+        new_article = Article.objects.create(
             user = user,
             title = title,
             desc = desc,
-            
         )
+        new_article.category.add(*categroy_objets)
+
         return Response({'저장완료'},status=status.HTTP_200_OK)

@@ -15,7 +15,7 @@ import datetime as dt
 # Create your views here.
 
 
-class login_view(APIView):
+class Join_Apiview(APIView):
     # permission_classes = [permissions.AllowAny]
     def post(self, request):
         email = request.data.get('email','')

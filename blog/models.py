@@ -1,8 +1,7 @@
 from django.db import models
 from user.models import User
-from datetime import datetime
-from datetime import timedelta
-
+from datetime import timedelta,datetime
+from django.utils import timezone
 class Category(models.Model):
     category = models.CharField(max_length=50)
     # desc = models.CharField(max_length=50)
@@ -11,11 +10,11 @@ class Category(models.Model):
         return self.category
 
 class Article(models.Model):
-    category =models.ManyToManyField(Category, related_name='cateogry')
+    category =models.ManyToManyField(Category,related_name='cate')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     desc = models.CharField(max_length=50)
-    start_time = models.DateTimeField(default=datetime.now, blank=True)
+    start_time = models.DateTimeField(default=datetime.now(), blank=True)
     end_time = models.DateTimeField(default= datetime.now() + timedelta(days=90), blank=True)
 
 class comment(models.Model):
