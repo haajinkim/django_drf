@@ -19,6 +19,7 @@ class GenericAPIException(APIException):
         self.status_code=status_code
         super().__init__(detail=detail, code=code)
 
+
 class IsAdminOrIsAuthenticatedReadOnly(BasePermission):
     """
     admin 사용자는 모두 가능, 로그인 사용자는 조회만 가능

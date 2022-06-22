@@ -41,7 +41,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     userprofile = UserProfileSerializer()
     article = ArticleSerializer(many=True)
     comment = CommentSerializer(many=True)

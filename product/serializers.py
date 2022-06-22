@@ -1,33 +1,43 @@
 from rest_framework import serializers
-from .models import Product
+from .models import Product, Review
 from user.models import User
-from django.db.models.query_utils import Q
-from django.utils import timezone
+from datetime import timezone
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ["description","star_avg","create_date"]
+
 
 class ProductSerializer(serializers.ModelSerializer):
-    product = serializers.SerializerMethodField()
-    def get_product(self,obj):
-        
-        Products = Product.objects.filter(id=obj.id).filter(Q(end_data__gte=timezone.now()))
-        return [{"title":product.title} for product in Products]
-
-
+    review_set = ReviewSerializer(many=True)
+    # reviews = serializers.SerializerMethodField()
+    # def get_reviews(self,obj):
+    #     print(obj)
+    #     print(dir(obj.review_set))
+    #     return "test"
     class Meta:
         model = Product
-        fields = ["title","thumbnail","content","end_data","user","product"]
+        fields = ["review_set","user","title","thumbnail","description","price",
+        "create_start","edit_date","exposure_end"]
     def validate(self, data):
-        return data
+        # product = Product.objects.get(id=obj_id)
+        if data.get('exposure_end') >= timezone.now():
+            return data
     def create(self, validated_data):
+        get_desc_data =  validated_data.pop("description") + str(timezone.now()) +  "에 수정된 게시물입니다." 
+        product = validated_data['description'] = get_desc_data
         product = Product(**validated_data)
+
         product.save()
         return product
-    # def update(self, validated_data):
-    #     product = Product(**validated_data)
-    #     product.save()
-    #     return product    
-class UsergetSerializer(serializers.ModelSerializer):
-    product_set = ProductSerializer(many=True)
-    class Meta:
-        model = User
-        fields = ["email","product_set"]
+    def update(self, instance, validated_data):
+        for key, value in validated_data.items():
+            if key == 'description':
+                value = str(timezone.now()) +"에 수정된 게시물입니다" + value
+            setattr(instance, key, value)
+        instance.save()
+        return instance
+
+
 
